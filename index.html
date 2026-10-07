@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<title>雪宝识字大冒险</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="app">
+  <!-- 顶部状态栏 -->
+  <header id="topbar" class="hidden">
+    <button id="btn-home" aria-label="回到地图">🏠</button>
+    <div id="progress-pill"><span id="star-count">⭐ 0</span></div>
+    <button id="btn-audio" aria-label="声音开关">🔊</button>
+  </header>
+
+  <!-- 场景1: 开场（点击启动音频权限） -->
+  <section id="scene-start" class="scene">
+    <div class="sky"><div class="snowfield"></div><div class="snowflake" style="--d:0s;left:8%"></div><div class="snowflake" style="--d:1.2s;left:22%"></div><div class="snowflake" style="--d:2.4s;left:41%"></div><div class="snowflake" style="--d:0.6s;left:58%"></div><div class="snowflake" style="--d:1.8s;left:74%"></div><div class="snowflake" style="--d:3s;left:89%"></div></div>
+    <div class="start-card">
+      <div class="mascot-pair" aria-hidden="true">
+        <div class="bunny">🐰</div>
+        <div class="princess">👑</div>
+      </div>
+      <h1 class="game-title">雪宝识字大冒险</h1>
+      <p class="game-sub">和小兔子·冰雪公主一起学汉字</p>
+      <button id="btn-start" class="btn-primary big">▶<span>开始冒险</span></button>
+      <button id="btn-parent" class="btn-ghost">家长中心 🔒</button>
+      <p class="tap-hint">👆 点一下开始冒险，就能听到声音哦</p>
+    </div>
+  </section>
+
+  <!-- 场景2: 关卡地图 -->
+  <section id="scene-map" class="scene hidden">
+    <div class="map-head">
+      <div class="map-bunny">🐰</div>
+      <div class="map-title-wrap">
+        <h2 id="map-title">冒险地图</h2>
+        <p id="map-sub">选一个亮晶晶的地方出发</p>
+      </div>
+      <button id="btn-album" class="album-btn" aria-label="我的字卡册">🖼️<span>字卡册</span></button>
+    </div>
+    <div id="stage-grid"></div>
+  </section>
+
+  <!-- 场景2b: 字卡图鉴册（v4 趣味收集） -->
+  <section id="scene-album" class="scene hidden">
+    <div class="album-head">
+      <button id="btn-album-back" aria-label="返回地图">🗺️</button>
+      <h2>我的字卡册</h2>
+      <span id="album-progress" class="album-progress"></span>
+    </div>
+    <p class="album-hint">答对 3 次的字会点亮哦，集满全部 280 张字卡吧！</p>
+    <div id="album-grid"></div>
+  </section>
+
+  <!-- 场景3: 关卡内（出题） -->
+  <section id="scene-level" class="scene hidden">
+    <div id="level-hud">
+      <div id="hud-left"><button id="btn-back" aria-label="返回地图">🗺️</button></div>
+      <div id="hud-progress"><div id="hud-bar"></div></div>
+      <div id="hud-right"><span id="hud-hearts">❤️❤️❤️</span></div>
+    </div>
+    <div id="level-stage" class="theme-forest">
+      <div id="level-companion" aria-hidden="true"><span id="companion-emoji">🐰</span><div id="companion-bubble"></div></div>
+      <div id="question-area">
+        <button id="q-audio" class="q-audio-btn" aria-label="再听一遍">
+          <span class="q-audio-icon">🔊</span>
+          <span id="q-audio-label">点我听题目</span>
+        </button>
+        <div id="q-prompt" class="q-prompt"></div>
+        <div id="options" class="options"></div>
+      </div>
+    </div>
+    <div id="feedback-overlay" class="hidden">
+      <div id="feedback-card"></div>
+    </div>
+  </section>
+
+  <!-- 场景4: 过关庆祝 -->
+  <section id="scene-win" class="scene hidden">
+    <div class="win-sky"><div class="snowfield"></div></div>
+    <div class="win-card">
+      <div class="win-stars" id="win-stars"></div>
+      <h2 id="win-title">太棒了！</h2>
+      <div id="win-new" class="win-new"></div>
+      <div id="win-cheer"></div>
+      <button id="btn-next" class="btn-primary big">➡️<span>下一关</span></button>
+      <button id="btn-map" class="btn-ghost">回到地图 🗺️</button>
+    </div>
+  </section>
+
+  <!-- 场景5: 家长中心（挡娃锁） -->
+  <section id="scene-parent" class="scene hidden">
+    <div class="parent-card">
+      <h2>家长中心</h2>
+      <div id="parent-lock">
+        <p>请家长输入算式答案进入</p>
+        <div class="lock-row"><span id="lock-q"></span> = <input id="lock-input" inputmode="numeric" type="text" maxlength="3"><button id="lock-btn" class="btn-primary sm">进入</button></div>
+        <p id="lock-err" class="lock-err hidden">再试一次</p>
+        <button id="lock-exit" class="btn-ghost">返回游戏</button>
+      </div>
+      <div id="parent-body" class="hidden"></div>
+    </div>
+  </section>
+
+  <!-- 音频解锁浮层（iOS Safari 自动播放策略兜底） -->
+  <div id="audio-unlock" class="hidden">
+    <div class="unlock-card">
+      <div class="bunny">🐰</div>
+      <p>点点小兔子，打开声音</p>
+      <button id="unlock-btn" class="btn-primary">🔓 打开声音</button>
+    </div>
+  </div>
+</div>
+<script src="curriculum.js"></script>
+<script src="assets/cheers.js"></script>
+<script src="assets/game.js"></script>
+</body>
+</html>
